@@ -90,8 +90,11 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 23 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" scope="TEST" name="jackson-core-asl-1.9.10" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="jackson-mapper-asl-1.9.10" level="project" />
     <orderEntry type="library" exported="" name="support-v4-23.1.0" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-23.1.0" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-23.1.0" level="project" />
+    <orderEntry type="module" module-name="ggarest" exported="" scope="TEST" />
   </component>
 </module>

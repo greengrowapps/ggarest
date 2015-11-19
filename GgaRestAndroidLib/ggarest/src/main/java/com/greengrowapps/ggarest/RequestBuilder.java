@@ -1,5 +1,7 @@
 package com.greengrowapps.ggarest;
 
+import com.greengrowapps.ggarest.exceptions.AlreadyExecutingException;
+import com.greengrowapps.ggarest.listeners.OnExceptionListener;
 import com.greengrowapps.ggarest.listeners.OnListResponseListener;
 import com.greengrowapps.ggarest.listeners.OnObjResponseListener;
 import com.greengrowapps.ggarest.listeners.OnResponseListener;
@@ -24,6 +26,8 @@ public interface RequestBuilder {
     RequestBuilder onOther(OnResponseListener listener);
     RequestBuilder onTimeout(OnTimeoutListener onTimeoutListener);
 
-    RestRequest execute();
+    RestRequest execute() throws AlreadyExecutingException;
     RestRequest build();
+
+    RequestBuilder onException(OnExceptionListener onExceptionListener);
 }

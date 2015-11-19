@@ -15,6 +15,16 @@ android {
         versionCode Integer.parseInt(project.VERSION_CODE)
     }
 
+    packagingOptions {
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/MANIFEST.MF'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
+
+
     buildTypes {
         release {
             minifyEnabled false
@@ -23,6 +33,8 @@ android {
 }
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'org.codehaus.jackson:jackson-core-asl:1.9.10'
+    compile 'org.codehaus.jackson:jackson-mapper-asl:1.9.10'
     testCompile 'junit:junit:4.12'
 }
 
