@@ -11,19 +11,17 @@ public class AsyncTimeoutHelper {
     private final AsyncBlockRunner asyncBlockRunner;
 
     private final CountDownLatch latch = new CountDownLatch(1);
-    private final AndroidTestCase testCase;
     private String failMessage;
     private Runnable assertions;
 
-    private AsyncTimeoutHelper(int timeoutMilis, AsyncBlockRunner asyncBlockRunner, AndroidTestCase testCase){
+    private AsyncTimeoutHelper(int timeoutMilis, AsyncBlockRunner asyncBlockRunner){
         this.timeoutMilis = timeoutMilis;
         this.asyncBlockRunner = asyncBlockRunner;
-        this.testCase = testCase;
     }
 
     public static void runAndWaitForEnd(AndroidTestCase testCase, int timeoutMilis, AsyncBlockRunner asyncBlockRunner) throws Exception {
 
-        new AsyncTimeoutHelper(timeoutMilis,asyncBlockRunner, testCase).run();
+        new AsyncTimeoutHelper(timeoutMilis,asyncBlockRunner).run();
     }
 
     private void run() throws Exception {
@@ -37,7 +35,7 @@ public class AsyncTimeoutHelper {
                 asyncBlockRunner.onEndCalled();
             }
             else{
-                testCase.fail(failMessage);
+                AndroidTestCase.fail(failMessage);
             }
         }
         else {

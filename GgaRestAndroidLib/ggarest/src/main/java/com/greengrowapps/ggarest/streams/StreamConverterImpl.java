@@ -27,7 +27,7 @@ public class StreamConverterImpl implements StreamConverter{
 
         ByteArrayOutputStream outBytes = new ByteArrayOutputStream();
         byte[] buffer= new byte[1024];
-        int nread=0;
+        int nread;
         while ( (nread = inputStream.read(buffer)) >0 )  {
             outBytes.write(buffer, 0, nread);
         }

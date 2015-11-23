@@ -41,7 +41,7 @@ public class RequestExecutionImpl extends Thread implements RequestExecution{
 
     @Override
     public void run() {
-        URL url = null;
+        URL url;
         urlConnection = null;
         try {
             url = new URL(connectionDefinition.getUrl());
