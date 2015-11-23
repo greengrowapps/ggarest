@@ -8,7 +8,6 @@ public class JsonSerializer implements Serializer {
 
     private final ObjectMapper mapper = new ObjectMapper();
 
-
     @Override
     public <T> T fromString(String string, Class<T> clazz) throws IOException {
         return mapper.readValue(string, clazz);
@@ -18,4 +17,5 @@ public class JsonSerializer implements Serializer {
     public String fromObject(Object object) throws IOException {
         return mapper.writeValueAsString(object);
     }
+
 }

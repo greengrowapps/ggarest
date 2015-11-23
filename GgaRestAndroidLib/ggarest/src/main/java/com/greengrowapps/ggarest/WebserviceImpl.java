@@ -7,10 +7,6 @@ import com.greengrowapps.ggarest.webservice.RequestExecution;
 import com.greengrowapps.ggarest.webservice.RequestExecutionFactory;
 import com.greengrowapps.ggarest.webservice.RequestExecutionCallbacks;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-
 public class WebserviceImpl implements Webservice{
 
     private final RequestExecutionFactory requestExecutionFactory;
@@ -60,4 +56,5 @@ public class WebserviceImpl implements Webservice{
     public StreamConverter getStreamConverter() {
         return streamConverter;
     }
+
 }

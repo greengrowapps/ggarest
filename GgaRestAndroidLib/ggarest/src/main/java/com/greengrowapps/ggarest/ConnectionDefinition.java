@@ -102,4 +102,8 @@ public class ConnectionDefinition {
     public void setOnExceptionListener(OnExceptionListener onExceptionListener) {
         this.exceptionListener = onExceptionListener;
     }
+
+    public Map<String, String> getHeaders() {
+        return headers;
+    }
 }

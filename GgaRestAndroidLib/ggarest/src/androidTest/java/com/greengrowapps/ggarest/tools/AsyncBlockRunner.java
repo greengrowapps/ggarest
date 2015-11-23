@@ -3,9 +3,10 @@ package com.greengrowapps.ggarest.tools;
 
 public interface AsyncBlockRunner {
 
-    void run( AsyncTimeoutHelper asyncTimeoutHelper) throws Exception;
+    void run( AsyncTimeoutHelper asyncTimeoutHelper ) throws Exception;
 
-    void onEndCalled();
+    void onEndCalled( );
 
-    void onTimeout();
+    void onTimeout( );
+
 }

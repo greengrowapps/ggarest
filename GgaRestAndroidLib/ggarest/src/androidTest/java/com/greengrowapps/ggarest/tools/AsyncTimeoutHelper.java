@@ -1,6 +1,6 @@
 package com.greengrowapps.ggarest.tools;
 
-import com.greengrowapps.ggarest.BuildConfig;
+import android.test.AndroidTestCase;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -11,22 +11,34 @@ public class AsyncTimeoutHelper {
     private final AsyncBlockRunner asyncBlockRunner;
 
     private final CountDownLatch latch = new CountDownLatch(1);
+    private final AndroidTestCase testCase;
+    private String failMessage;
+    private Runnable assertions;
 
-    private AsyncTimeoutHelper(int timeoutMilis, AsyncBlockRunner asyncBlockRunner){
+    private AsyncTimeoutHelper(int timeoutMilis, AsyncBlockRunner asyncBlockRunner, AndroidTestCase testCase){
         this.timeoutMilis = timeoutMilis;
         this.asyncBlockRunner = asyncBlockRunner;
+        this.testCase = testCase;
     }
 
-    public static void runAndWaitForEnd(int timeoutMilis, AsyncBlockRunner asyncBlockRunner) throws Exception {
+    public static void runAndWaitForEnd(AndroidTestCase testCase, int timeoutMilis, AsyncBlockRunner asyncBlockRunner) throws Exception {
 
-        new AsyncTimeoutHelper(timeoutMilis,asyncBlockRunner).run();
+        new AsyncTimeoutHelper(timeoutMilis,asyncBlockRunner, testCase).run();
     }
 
     private void run() throws Exception {
         asyncBlockRunner.run(this);
 
         if(latch.await(timeoutMilis, TimeUnit.MILLISECONDS)){
-            asyncBlockRunner.onEndCalled();
+            if(failMessage==null) {
+                if(assertions!=null){
+                    assertions.run();
+                }
+                asyncBlockRunner.onEndCalled();
+            }
+            else{
+                testCase.fail(failMessage);
+            }
         }
         else {
             asyncBlockRunner.onTimeout();
@@ -35,5 +47,15 @@ public class AsyncTimeoutHelper {
 
     public void end(){
         latch.countDown();
+    }
+
+    public void failSync(String failMessage){
+        this.failMessage = failMessage;
+
+        latch.countDown();
+    }
+
+    public void performAssertions(Runnable runnable){
+        this.assertions = runnable;
     }
 }

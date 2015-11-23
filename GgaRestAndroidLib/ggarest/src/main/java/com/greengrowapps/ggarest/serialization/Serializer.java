@@ -1,8 +1,5 @@
 package com.greengrowapps.ggarest.serialization;
 
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonParseException;
-
 import java.io.IOException;
 
 public interface Serializer {

@@ -4,6 +4,7 @@ package com.greengrowapps.ggarest.webservice;
 import com.greengrowapps.ggarest.ConnectionDefinition;
 import com.greengrowapps.ggarest.ResponseImpl;
 import com.greengrowapps.ggarest.WebserviceImpl;
+import com.greengrowapps.ggarest.authorization.UrlConnectionAuthorizator;
 import com.greengrowapps.ggarest.serialization.Serializer;
 import com.greengrowapps.ggarest.streams.StreamConverter;
 
@@ -23,16 +24,19 @@ public class RequestExecutionImpl extends Thread implements RequestExecution{
     private final ConnectionDefinition connectionDefinition;
     private final RequestCallbackCaller requestCallbackCaller;
     private final WebserviceImpl webservice;
+    private final UrlConnectionAuthorizator authorizator;
     private HttpURLConnection urlConnection;
     private boolean cancelled = false;
 
     public RequestExecutionImpl(
             ConnectionDefinition connectionDefinition,
             RequestCallbackCaller requestCallbackCaller,
-            WebserviceImpl webservice) {
+            WebserviceImpl webservice,
+            UrlConnectionAuthorizator authorizator) {
         this.connectionDefinition = connectionDefinition;
         this.requestCallbackCaller = requestCallbackCaller;
         this.webservice = webservice;
+        this.authorizator = authorizator;
     }
 
     @Override
@@ -46,6 +50,8 @@ public class RequestExecutionImpl extends Thread implements RequestExecution{
             }
             urlConnection.setRequestMethod( getRequestMethod() );
 
+            urlConnection = fillWithHeaders( urlConnection, connectionDefinition.getHeaders() );
+
             if(connectionDefinition.isPostPut()) {
                 urlConnection.setDoOutput(true);
                 urlConnection.setChunkedStreamingMode(0);
@@ -58,9 +64,17 @@ public class RequestExecutionImpl extends Thread implements RequestExecution{
                 }
             }
 
-            if(!cancelled) {
-                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+            if(authorizator!=null){
+                urlConnection = authorizator.authorize(urlConnection);
+            }
 
+            if(!cancelled) {
+                int statusCode = urlConnection.getResponseCode();
+
+                InputStream in = new BufferedInputStream( isErrorCode(statusCode) ?
+                        urlConnection.getErrorStream() :
+                        urlConnection.getInputStream()
+                );
                 processResponse(in, urlConnection);
             }
         } catch (IOException e) {
@@ -73,6 +87,17 @@ public class RequestExecutionImpl extends Thread implements RequestExecution{
                 }
             }
         }
+    }
+
+    private HttpURLConnection fillWithHeaders(HttpURLConnection urlConnection, Map<String, String> headers) {
+        for(String key : headers.keySet()){
+            urlConnection.setRequestProperty(key, headers.get(key));
+        }
+        return urlConnection;
+    }
+
+    private boolean isErrorCode(int statusCode) {
+        return statusCode>=400;
     }
 
     private void processResponse(InputStream in, HttpURLConnection urlConnection) throws IOException {
