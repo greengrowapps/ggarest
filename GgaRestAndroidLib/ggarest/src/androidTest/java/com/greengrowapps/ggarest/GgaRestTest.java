@@ -1,5 +1,8 @@
 package com.greengrowapps.ggarest;
 
+import com.greengrowapps.ggarest.authorization.CredentialsImpl;
+import com.greengrowapps.ggarest.authorization.UrlConnectionAuthorizator;
+import com.greengrowapps.ggarest.authorization.UrlConnectionBasicAuthorizator;
 import com.greengrowapps.ggarest.serialization.JsonSerializer;
 import com.greengrowapps.ggarest.streams.StreamConverterImpl;
 import com.greengrowapps.ggarest.webservice.RequestCallbackCaller;
@@ -9,8 +12,11 @@ import com.greengrowapps.ggarest.webservice.RequestExecutionFactory;
 import com.greengrowapps.ggarest.webservice.RequestExecutionImpl;
 
 public class GgaRestTest extends RealConnectionsTest{
+
+    UrlConnectionAuthorizator authorizator;
+
     @Override
-    protected Webservice getWebserviceInstance() {
+    protected WebserviceImpl getWebserviceInstance() {
 
         RequestExecutionFactory factory = new RequestExecutionFactory() {
             @Override
@@ -25,7 +31,7 @@ public class GgaRestTest extends RealConnectionsTest{
                     public void callError(Exception e) {
                         requestExecutionCallbacks.onException(e);
                     }
-                }, webservice );
+                }, webservice, authorizator );
             }
         };
 
@@ -33,7 +39,7 @@ public class GgaRestTest extends RealConnectionsTest{
     }
 
     @Override
-    public void testSimpleGet() throws Exception {
-        super.testSimpleGet();
+    protected void setLogin(String user, String pass) {
+        authorizator = new UrlConnectionBasicAuthorizator(new CredentialsImpl(user,pass));
     }
 }
