@@ -2,16 +2,16 @@ language: android
 jdk: oraclejdk7
 env:
   matrix:
-    - ANDROID_TARGET=android-19  ANDROID_ABI=armeabi-v7a
+    - ANDROID_TARGET=android-22  ANDROID_ABI=armeabi-v7a
 
 android:
   components:
     - android-23
-    - build-tools-23.0.1
+    - build-tools-23.0.2
     - extra-android-m2repository
     - extra-google-m2repository
 before_script:
-  - echo no | android create avd --force -n test -t android-21 --abi armeabi-v7a
+  - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI
   - emulator -avd test -no-skin -no-audio -no-window &
   - curl http://is.gd/android_wait_for_emulator > android-wait-for-emulator
   - chmod u+x android-wait-for-emulator
