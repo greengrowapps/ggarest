@@ -13,7 +13,7 @@ import java.util.Collection;
 public class RequestBuilderImpl implements RequestBuilder {
 
     private final WebserviceImpl webservice;
-    private ConnectionDefinition connectionDefinition;
+    private final ConnectionDefinition connectionDefinition;
 
     public RequestBuilderImpl(ConnectionDefinition connectionDefinition, WebserviceImpl webservice){
         this.connectionDefinition = connectionDefinition;

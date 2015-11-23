@@ -11,8 +11,7 @@ public class WebserviceImpl implements Webservice{
 
     private final RequestExecutionFactory requestExecutionFactory;
     private final StreamConverter streamConverter;
-
-    private Serializer serializer;
+    private final Serializer serializer;
 
     public WebserviceImpl( RequestExecutionFactory requestExecutionFactory, Serializer serializer, StreamConverter streamConverter){
         this.requestExecutionFactory = requestExecutionFactory;
