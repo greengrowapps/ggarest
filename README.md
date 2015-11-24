@@ -1,4 +1,5 @@
-### GgaREST [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.greengrowapps/ggarest/badge.svg?style=flat)]
+### GgaREST
+![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.greengrowapps/ggarest/badge.svg?style=flat)
 
 ### Introduction
 This library pretends to make easy do http connections in Android (Modifying a couple of classes can work in regular Java too). It's prepared specially for using JSON, by default uses a JSON de/serializer.
