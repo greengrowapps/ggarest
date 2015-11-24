@@ -1,6 +1,6 @@
 ### GgaREST
 ![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.greengrowapps/ggarest/badge.svg?style=flat)
-
+![Travis](https://travis-ci.org/greengrowapps/ggarest.svg)
 ### Introduction
 This library pretends to make easy do http connections in Android (Modifying a couple of classes can work in regular Java too). It's prepared specially for using JSON, by default uses a JSON de/serializer.
 The strongest points that have is: when you make a request (get, post, put, delete) and you register the listeners, your listerer code will be code in the mainthread. Thats allow modifying UI elements directly in the listener code. And the seccond thing is that you can specify the class that you are specting and will be deserialized using Jackson library, if is it a list, you also can use the list listerner to deserialize as object list.
