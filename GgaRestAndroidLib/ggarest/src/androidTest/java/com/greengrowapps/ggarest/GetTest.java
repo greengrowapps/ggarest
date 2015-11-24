@@ -22,17 +22,9 @@ import java.util.List;
 
 import static com.greengrowapps.ggarest.tools.AsyncTimeoutHelper.*;
 
-public abstract class RealConnectionsTest extends AndroidTestCase {
+public class GetTest extends GgaRestTest {
 
-    private static final String DEBUG_TAG = "RealConnectionsTest";
-
-    //private static final int CONNECTION_TIMEOUT = 5*60*1000;
     private static final int CONNECTION_TIMEOUT = 30*1000;
-
-    protected abstract Webservice getWebserviceInstance();
-
-    protected abstract void setLogin(String user, String pass);
-
 
     public void testSimpleGet() throws Exception {
 
@@ -136,45 +128,6 @@ public abstract class RealConnectionsTest extends AndroidTestCase {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class EchoPostResponse{
         public String data;
-    }
-
-    public void testSimplePost() throws Exception {
-
-        runAndWaitForEnd(this,CONNECTION_TIMEOUT, new AsyncBlockRunner() {
-
-            @Override
-            public void run(final AsyncTimeoutHelper asyncTimeoutHelper) throws AlreadyExecutingException {
-
-                getWebserviceInstance()
-                        .post("http://httpbin.org/post")
-                        .withBody("Hello")
-                        .onSuccess(EchoPostResponse.class, new OnObjResponseListener<EchoPostResponse>() {
-                            @Override
-                            public void onResponse(int code, final EchoPostResponse message, final Response fullResponse) {
-
-                                asyncTimeoutHelper.performAssertions(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        assertEquals("\"Hello\"", message.data);
-                                    }
-                                });
-                                asyncTimeoutHelper.end();
-                            }
-                        })
-                        .execute();
-            }
-
-            @Override
-            public void onEndCalled() {
-                //Success
-            }
-
-            @Override
-            public void onTimeout() {
-                fail("Connection timed out");
-            }
-        });
-
     }
 
     public void testBasicAuth() throws Exception {

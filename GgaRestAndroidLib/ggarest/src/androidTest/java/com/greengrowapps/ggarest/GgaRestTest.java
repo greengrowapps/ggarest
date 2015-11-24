@@ -1,5 +1,7 @@
 package com.greengrowapps.ggarest;
 
+import android.test.AndroidTestCase;
+
 import com.greengrowapps.ggarest.authorization.CredentialsImpl;
 import com.greengrowapps.ggarest.authorization.UrlConnectionAuthorizator;
 import com.greengrowapps.ggarest.authorization.UrlConnectionBasicAuthorizator;
@@ -11,11 +13,10 @@ import com.greengrowapps.ggarest.webservice.RequestExecutionCallbacks;
 import com.greengrowapps.ggarest.webservice.RequestExecutionFactory;
 import com.greengrowapps.ggarest.webservice.RequestExecutionImpl;
 
-public class GgaRestTest extends RealConnectionsTest{
+public class GgaRestTest extends AndroidTestCase{
 
     UrlConnectionAuthorizator authorizator;
 
-    @Override
     protected WebserviceImpl getWebserviceInstance() {
 
         RequestExecutionFactory factory = new RequestExecutionFactory() {
@@ -38,7 +39,6 @@ public class GgaRestTest extends RealConnectionsTest{
         return new WebserviceImpl(factory, new JsonSerializer(), new StreamConverterImpl("UTF-8"));
     }
 
-    @Override
     protected void setLogin(String user, String pass) {
         authorizator = new UrlConnectionBasicAuthorizator(new CredentialsImpl(user,pass));
     }
