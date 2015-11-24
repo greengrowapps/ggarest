@@ -7,11 +7,15 @@ import com.greengrowapps.ggarest.webservice.RequestExecution;
 import com.greengrowapps.ggarest.webservice.RequestExecutionFactory;
 import com.greengrowapps.ggarest.webservice.RequestExecutionCallbacks;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class WebserviceImpl implements Webservice{
 
     private final RequestExecutionFactory requestExecutionFactory;
     private final StreamConverter streamConverter;
     private final Serializer serializer;
+    private final Map<String, String> defaultHeaders = new HashMap<>();
 
     public WebserviceImpl( RequestExecutionFactory requestExecutionFactory, Serializer serializer, StreamConverter streamConverter){
         this.requestExecutionFactory = requestExecutionFactory;
@@ -54,6 +58,16 @@ public class WebserviceImpl implements Webservice{
 
     public StreamConverter getStreamConverter() {
         return streamConverter;
+    }
+
+    public void addDefaultHeader(String key, String value) {
+        defaultHeaders.put(key, value);
+    }
+    public void addDefaultHeaders(Map<String,String> headers) {
+        defaultHeaders.putAll(headers);
+    }
+    public void clearDefaultHeaders(){
+        defaultHeaders.clear();
     }
 
 }

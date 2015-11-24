@@ -7,6 +7,7 @@ import com.greengrowapps.ggarest.authorization.CredentialsImpl;
 import com.greengrowapps.ggarest.authorization.UrlConnectionBasicAuthorizator;
 import com.greengrowapps.ggarest.exceptions.AlreadyExecutingException;
 import com.greengrowapps.ggarest.listeners.OnExceptionListener;
+import com.greengrowapps.ggarest.listeners.OnListResponseListener;
 import com.greengrowapps.ggarest.listeners.OnObjResponseListener;
 import com.greengrowapps.ggarest.listeners.OnResponseListener;
 import com.greengrowapps.ggarest.tools.AsyncBlockRunner;
@@ -25,8 +26,8 @@ public abstract class RealConnectionsTest extends AndroidTestCase {
 
     private static final String DEBUG_TAG = "RealConnectionsTest";
 
-    private static final int CONNECTION_TIMEOUT = 5*60*1000;
-    //private static final int CONNECTION_TIMEOUT = 30*1000;
+    //private static final int CONNECTION_TIMEOUT = 5*60*1000;
+    private static final int CONNECTION_TIMEOUT = 30*1000;
 
     protected abstract Webservice getWebserviceInstance();
 
@@ -210,4 +211,43 @@ public abstract class RealConnectionsTest extends AndroidTestCase {
         });
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class User{
+        int id;
+        String name;
+        String username;
+    }
+
+    public void testSimpleList() throws Exception {
+
+        runAndWaitForEnd(this,CONNECTION_TIMEOUT, new AsyncBlockRunner() {
+
+            @Override
+            public void run(final AsyncTimeoutHelper asyncTimeoutHelper) throws AlreadyExecutingException {
+
+                final Webservice webservice = getWebserviceInstance();
+
+                webservice
+                        .get("http://jsonplaceholder.typicode.com/users")
+                        .onSuccess(User.class,new OnListResponseListener<User>() {
+                            @Override
+                            public void onResponse(int code, List<User> users, Response fullResponse) {
+                                assertFalse(users.isEmpty());
+                                asyncTimeoutHelper.end();
+                            }
+                        })
+                        .execute();
+            }
+
+            @Override
+            public void onEndCalled() {
+                //Success
+            }
+
+            @Override
+            public void onTimeout() {
+                fail("Connection timed out");
+            }
+        });
+    }
 }

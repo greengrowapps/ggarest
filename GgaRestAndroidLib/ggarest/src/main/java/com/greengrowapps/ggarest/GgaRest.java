@@ -13,6 +13,7 @@ import com.greengrowapps.ggarest.webservice.RequestExecutionAndroidFactory;
 import com.greengrowapps.ggarest.webservice.RequestExecutionFactory;
 
 import java.security.InvalidParameterException;
+import java.util.Map;
 
 public class GgaRest {
 
@@ -48,9 +49,20 @@ public class GgaRest {
         executionFactory.setAuthorizator( null );
     }
 
-    protected static void buildInstance() {
+    private static void buildInstance() {
         instance = new WebserviceImpl(executionFactory, serializer, streamConverter);
     }
+
+    public static void addDefaulteader(String key, String value){
+        ((WebserviceImpl)ws()).addDefaultHeader(key, value);
+    }
+    public static void addDefaultHeaders(Map<String,String> headers){
+        ((WebserviceImpl)ws()).addDefaultHeaders(headers);
+    }
+    public static void clearDefaultHeaders(){
+        ((WebserviceImpl)ws()).clearDefaultHeaders();
+    }
+
 
     public static Webservice ws() {
         if(executionFactory==null){

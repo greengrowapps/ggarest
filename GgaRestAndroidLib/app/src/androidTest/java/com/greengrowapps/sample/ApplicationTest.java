@@ -1,4 +1,4 @@
-package com.greengrowapps.ggarest;
+package com.greengrowapps.sample;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
