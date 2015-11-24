@@ -6,66 +6,66 @@ The strongest points that have is: when you make a request (get, post, put, dele
 
 To use the GgaRest class you only have to call the init method when your application start. If you want you can add here default headers like an Api key.
 
-	```java
-    GgaRest.init(this);
-    GgaRest.addDefaulteader("Accept","application/json");
-    ```
+```java
+GgaRest.init(this);
+GgaRest.addDefaulteader("Accept","application/json");
+```
 Here the library does a get over the url and deserializes the content as OriginAndUrl class:
 
-	```java
-    GgaRest.ws().get("http://httpbin.org/get")
-            .onSuccess(OriginAndUrl.class, new OnObjResponseListener<OriginAndUrl>() {
+```java
+GgaRest.ws().get("http://httpbin.org/get")
+        .onSuccess(OriginAndUrl.class, new OnObjResponseListener<OriginAndUrl>() {
+            @Override
+            public void onResponse(int code, OriginAndUrl object, Response fullResponse) {
+                txtUrl.setText(object.url);
+                txtIp.setText(object.origin);
+            }
+        })
+        .onOther(new OnResponseListener() {
+            @Override
+            public void onResponse(int code, Response fullResponse) {
+                Toast.makeText(MainActivity.this, "Get failed", Toast.LENGTH_SHORT).show();
+            }
+        })
+        .execute();
+```
+Or here we use basic auth to retrieve the closest trends using the twitter api:
+
+```java
+    GgaRest.useBasicAuth("username","password");
+
+    GgaRest.ws()
+            .get("https://api.twitter.com/1.1/trends/closest.json")
+            .onSuccess(Trend.class, new OnListResponseListener<Trend>() {
                 @Override
-                public void onResponse(int code, OriginAndUrl object, Response fullResponse) {
-                    txtUrl.setText(object.url);
-                    txtIp.setText(object.origin);
+                public void onResponse(int code, List<Trend> trends, Response fullResponse) {
+                    adapter.updateData(trends);
                 }
             })
-            .onOther(new OnResponseListener() {
+            .onResponse(401, new OnResponseListener() {
                 @Override
                 public void onResponse(int code, Response fullResponse) {
-                    Toast.makeText(MainActivity.this, "Get failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Unauthorized", Toast.LENGTH_SHORT).show();
                 }
             })
             .execute();
-    ```
-Or here we use basic auth to retrieve the closest trends using the twitter api:
-
-	```java
-        GgaRest.useBasicAuth("username","password");
-
-        GgaRest.ws()
-                .get("https://api.twitter.com/1.1/trends/closest.json")
-                .onSuccess(Trend.class, new OnListResponseListener<Trend>() {
-                    @Override
-                    public void onResponse(int code, List<Trend> trends, Response fullResponse) {
-                        adapter.updateData(trends);
-                    }
-                })
-                .onResponse(401, new OnResponseListener() {
-                    @Override
-                    public void onResponse(int code, Response fullResponse) {
-                        Toast.makeText(MainActivity.this, "Unauthorized", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .execute();
-    ```
+```
     
 ### Integration
 
 **1)** Add as a dependency to your ``build.gradle``:
 
-	```groovy
-	dependencies {
-	    compile 'com.greengrowapps:ggarest:0.3'
-	}
-	```
+```groovy
+dependencies {
+    compile 'com.greengrowapps:ggarest:0.3'
+}
+```
 
 **2)** Initialize the class in your application onCreate:
 
-	```java
-    GgaRest.init(this);
-    ```
+```java
+GgaRest.init(this);
+```
     
 ### Things to develop
 This versión is not still the 1.0. Need some test and development. If you want to collaborate would be nice to have this features:
@@ -73,5 +73,26 @@ This versión is not still the 1.0. Need some test and development. If you want 
 + Response stream to string using the headers encoding
 + Request cache
 + More tests
+
+### License
+
+```
+   Apache License Version 2.0, January 2004
+
+   Copyright 2015 Green Grow Apps SC
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+
+```
     
 
