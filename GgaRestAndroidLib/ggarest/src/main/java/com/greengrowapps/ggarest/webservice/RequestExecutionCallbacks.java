@@ -8,4 +8,6 @@ public interface RequestExecutionCallbacks {
     void onRequestCompleted(ResponseImpl response);
 
     void onException(Exception exception);
+
+    void onTimeout();
 }

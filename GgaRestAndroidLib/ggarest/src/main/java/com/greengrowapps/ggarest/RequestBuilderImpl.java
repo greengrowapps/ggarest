@@ -41,6 +41,12 @@ public class RequestBuilderImpl implements RequestBuilder {
     }
 
     @Override
+    public RequestBuilder withTimeout(long millis) {
+        connectionDefinition.setTimeout(millis);
+        return this;
+    }
+
+    @Override
     public RequestBuilder onResponse(int statusCode, OnResponseListener listener) {
         connectionDefinition.registerListener(statusCode,listener);
         return this;

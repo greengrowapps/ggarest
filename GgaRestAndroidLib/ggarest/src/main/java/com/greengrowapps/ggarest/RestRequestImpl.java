@@ -3,6 +3,7 @@ package com.greengrowapps.ggarest;
 import com.greengrowapps.ggarest.exceptions.AlreadyExecutingException;
 import com.greengrowapps.ggarest.listeners.OnExceptionListener;
 import com.greengrowapps.ggarest.listeners.OnResponseListener;
+import com.greengrowapps.ggarest.listeners.OnTimeoutListener;
 import com.greengrowapps.ggarest.notifiers.AbstractNotifier;
 import com.greengrowapps.ggarest.webservice.RequestExecution;
 import com.greengrowapps.ggarest.webservice.RequestExecutionCallbacks;
@@ -76,6 +77,14 @@ public class RestRequestImpl implements RestRequest, RequestExecutionCallbacks{
         OnExceptionListener listener = connectionDefinition.getExceptionListener();
         if(listener!=null){
             listener.onExceptionThrown(exception);
+        }
+    }
+
+    @Override
+    public void onTimeout() {
+        OnTimeoutListener listener = connectionDefinition.getTimeoutListener();
+        if(listener!=null){
+            listener.onTimeout();
         }
     }
 }

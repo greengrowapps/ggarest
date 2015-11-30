@@ -7,4 +7,5 @@ public interface RequestCallbackCaller {
 
     void callRequestCompleted(ResponseImpl response);
     void callError(final Exception e);
+    void callTimeout();
 }

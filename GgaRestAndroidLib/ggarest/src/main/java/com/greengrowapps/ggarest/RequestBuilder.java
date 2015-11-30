@@ -15,6 +15,8 @@ public interface RequestBuilder {
     RequestBuilder addHeader(String key, String value);
     RequestBuilder addHeaders(Collection<? extends RequestHeader> headers);
 
+    RequestBuilder withTimeout(long millis);
+
     RequestBuilder onResponse(int statusCode, OnResponseListener listener);
     <T> RequestBuilder onResponse(Class<T> responseClass, int statusCode, OnObjResponseListener<T> listener);
     <T> RequestBuilder onResponse(Class<T> responseClass, int statusCode, OnListResponseListener<T> listener);

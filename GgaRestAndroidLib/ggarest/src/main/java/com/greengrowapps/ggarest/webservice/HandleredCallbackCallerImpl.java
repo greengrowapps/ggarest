@@ -35,4 +35,14 @@ public class HandleredCallbackCallerImpl implements RequestCallbackCaller{
             }
         });
     }
+
+    @Override
+    public void callTimeout() {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                requestExecutionCallbacks.onTimeout();
+            }
+        });
+    }
 }

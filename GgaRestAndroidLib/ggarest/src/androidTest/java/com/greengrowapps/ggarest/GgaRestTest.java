@@ -32,6 +32,11 @@ public class GgaRestTest extends AndroidTestCase{
                     public void callError(Exception e) {
                         requestExecutionCallbacks.onException(e);
                     }
+
+                    @Override
+                    public void callTimeout() {
+                        requestExecutionCallbacks.onTimeout();
+                    }
                 }, webservice, authorizator );
             }
         };

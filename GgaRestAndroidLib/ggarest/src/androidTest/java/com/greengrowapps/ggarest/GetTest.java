@@ -10,6 +10,7 @@ import com.greengrowapps.ggarest.listeners.OnExceptionListener;
 import com.greengrowapps.ggarest.listeners.OnListResponseListener;
 import com.greengrowapps.ggarest.listeners.OnObjResponseListener;
 import com.greengrowapps.ggarest.listeners.OnResponseListener;
+import com.greengrowapps.ggarest.listeners.OnTimeoutListener;
 import com.greengrowapps.ggarest.tools.AsyncBlockRunner;
 import com.greengrowapps.ggarest.tools.AsyncTimeoutHelper;
 import com.greengrowapps.ggarest.webservice.RequestExecutionAndroidFactory;
@@ -164,6 +165,40 @@ public class GetTest extends GgaRestTest {
         });
     }
 
+    public void testOAuth() throws Exception {
+
+        runAndWaitForEnd(this,CONNECTION_TIMEOUT, new AsyncBlockRunner() {
+
+            @Override
+            public void run(final AsyncTimeoutHelper asyncTimeoutHelper) throws AlreadyExecutingException {
+
+                final Webservice webservice = getWebserviceInstance();
+
+                setLogin("user","passwd");
+
+                webservice
+                        .get("http://httpbin.org/basic-auth/user/passwd")
+                        .onSuccess(new OnResponseListener() {
+                            @Override
+                            public void onResponse(int code, Response fullResponse) {
+                                asyncTimeoutHelper.end();
+                            }
+                        })
+                        .execute();
+            }
+
+            @Override
+            public void onEndCalled() {
+                //Success
+            }
+
+            @Override
+            public void onTimeout() {
+                fail("Connection timed out");
+            }
+        });
+    }
+
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class User{
         int id;
@@ -195,6 +230,58 @@ public class GetTest extends GgaRestTest {
             @Override
             public void onEndCalled() {
                 //Success
+            }
+
+            @Override
+            public void onTimeout() {
+                fail("Connection timed out");
+            }
+        });
+    }
+
+    public void testTimeout() throws Exception {
+
+        final boolean[] otherCalled = new boolean[1];
+        final boolean[] timeoutCalled = new boolean[1];
+
+        otherCalled[0]=false;
+        timeoutCalled[0]=false;
+
+        runAndWaitForEnd(this, CONNECTION_TIMEOUT, new AsyncBlockRunner() {
+
+            @Override
+            public void run(final AsyncTimeoutHelper asyncTimeoutHelper) throws AlreadyExecutingException {
+
+                final Webservice webservice = getWebserviceInstance();
+
+                webservice
+                        .get("http://httpbin.org/delay/10")
+                        .withTimeout(5*1000)
+                        .onOther(new OnResponseListener() {
+                            @Override
+                            public void onResponse(int code, Response fullResponse) {
+                                otherCalled[0] = true;
+                            }
+                        })
+                        .onTimeout(new OnTimeoutListener() {
+                            @Override
+                            public void onTimeout() {
+                                timeoutCalled[0] = true;
+                                asyncTimeoutHelper.end();
+                            }
+                        })
+                        .execute();
+            }
+
+            @Override
+            public void onEndCalled() {
+                try {
+                    Thread.sleep(5*1000);
+                    assertFalse(otherCalled[0]);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    fail("Ex");
+                }
             }
 
             @Override

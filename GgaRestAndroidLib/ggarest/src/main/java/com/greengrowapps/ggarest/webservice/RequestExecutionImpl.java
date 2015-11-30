@@ -16,6 +16,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeoutException;
 
 public class RequestExecutionImpl extends Thread implements RequestExecution{
 
@@ -28,8 +29,11 @@ public class RequestExecutionImpl extends Thread implements RequestExecution{
     private HttpURLConnection urlConnection;
     private boolean cancelled = false;
 
+    private final Thread timeoutThread;
+    private boolean timeout = false;
+
     public RequestExecutionImpl(
-            ConnectionDefinition connectionDefinition,
+            final ConnectionDefinition connectionDefinition,
             RequestCallbackCaller requestCallbackCaller,
             WebserviceImpl webservice,
             UrlConnectionAuthorizator authorizator) {
@@ -37,6 +41,22 @@ public class RequestExecutionImpl extends Thread implements RequestExecution{
         this.requestCallbackCaller = requestCallbackCaller;
         this.webservice = webservice;
         this.authorizator = authorizator;
+        timeoutThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(connectionDefinition.getTimeout());
+                    synchronized (mutex){
+                        if(!Thread.interrupted()) {
+                            timeout = true;
+                        }
+                    }
+                }
+                catch (InterruptedException e){
+                    //Do nothing
+                }
+            }
+        });
     }
 
     @Override
@@ -69,8 +89,16 @@ public class RequestExecutionImpl extends Thread implements RequestExecution{
             }
 
             if(!cancelled) {
+                timeoutThread.start();
                 int statusCode = urlConnection.getResponseCode();
-
+                synchronized (mutex) {
+                    if(!timeout) {
+                        timeoutThread.interrupt();
+                    }
+                    else{
+                        throw new TimeoutException();
+                    }
+                }
                 InputStream in = new BufferedInputStream( isErrorCode(statusCode) ?
                         urlConnection.getErrorStream() :
                         urlConnection.getInputStream()
@@ -80,6 +108,8 @@ public class RequestExecutionImpl extends Thread implements RequestExecution{
         } catch (IOException e) {
             e.printStackTrace();
             requestCallbackCaller.callError(e);
+        } catch (TimeoutException e){
+            requestCallbackCaller.callTimeout();
         } finally {
             synchronized (mutex) {
                 if (urlConnection != null) {

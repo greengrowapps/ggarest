@@ -15,6 +15,7 @@ import java.util.Map;
 
 public class ConnectionDefinition {
 
+    private static final long DEFAULT_TIMEOUT = 10 * 1000;
     private OnExceptionListener exceptionListener;
     private final RestMethod method;
     private final String url;
@@ -23,6 +24,7 @@ public class ConnectionDefinition {
     private final Map<Integer,AbstractNotifier> statusCodeListeners = new HashMap<>();
     private OnResponseListener defaultListener;
     private OnTimeoutListener timeoutListener;
+    private long timeout = DEFAULT_TIMEOUT;
 
     private ConnectionDefinition(RestMethod method, String url){
         this.method = method;
@@ -105,5 +107,17 @@ public class ConnectionDefinition {
 
     public Map<String, String> getHeaders() {
         return headers;
+    }
+
+    public long getTimeout() {
+        return timeout;
+    }
+
+    public OnTimeoutListener getTimeoutListener() {
+        return timeoutListener;
+    }
+
+    public void setTimeout(long timeoutMillis) {
+        this.timeout = timeoutMillis;
     }
 }
