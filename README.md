@@ -4,18 +4,22 @@
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-GgaREST-green.svg?style=true)](https://android-arsenal.com/details/1/2837)
 
 ### Introduction
-This library pretends to make easy do http connections in Android (Modifying a couple of classes can work in regular Java too). It's prepared specially for using JSON, by default uses a JSON de/serializer.
-The strongest points that have is: when you make a request (get, post, put, delete) and you register the listeners, your listener code will be code in the main thread. Thats allow modifying UI elements directly in the listener code. And the second thing is that you can specify the class that you are expecting and will be deserialized using Jackson library, if is it a list, you also can use the list listener to deserialize as object list.
+This library makes it easy to work with http connections on Android, but you can also make it work on Java vanilla by modifying only a couple of classes. 
+It's especially designed to work with JSON, as it uses a JSON de/serializer by default.
+Its strongest points are the following : 
+- When you make a request (get, post, put, delete) and you register the listeners, your listener code will be code in the main thread. This design allows the modification of UI components directly in the listener code.
+- You can specify the object that you are expecting and it will be deserialized using the [Jackson library](https://github.com/FasterXML/jackson). If it's a list, you also can use the list listener to deserialize it as an object list.
 
 ### Usage
 
-To use the GgaRest class you only have to call the init method when your application start. If you want you can add here default headers like an Api key.
+To use the GgaRest class you only have to call the init method when your application start. 
+Here is an example by adding default headers like an Api key.
 
 ```java
 GgaRest.init(this);
 GgaRest.addDefaulteader("Accept","application/json");
 ```
-Here the library does a get over the url and deserializes the content as OriginAndUrl class:
+This example gets the content of the url given and deserializes the content as an OriginAndUrl object:
 
 ```java
 GgaRest.ws().get("http://httpbin.org/get")
@@ -34,7 +38,7 @@ GgaRest.ws().get("http://httpbin.org/get")
         })
         .execute();
 ```
-Or here we use basic auth to retrieve the closest trends using the twitter api:
+Or here we use basic auth to retrieve the closest trends using the Twitter api:
 
 ```java
     GgaRest.useBasicAuth("username","password");
@@ -62,19 +66,21 @@ Or here we use basic auth to retrieve the closest trends using the twitter api:
 
 ```groovy
 dependencies {
-    compile 'com.greengrowapps:ggarest:0.3'
+    compile 'com.greengrowapps:ggarest:0.4'
 }
 ```
 
-**2)** Initialize the class in your application onCreate:
+**2)** Initialize the object in one of your activities' onCreate to start using it:
 
 ```java
 GgaRest.init(this);
 ```
     
 ### Things to develop
-This versión is not still the 1.0. Need some test and development. If you want to collaborate would be nice to have this features:
-+ More authentication methods like OAuth OAuth2
+This version is still not 1.0, which means api changes could happen. It needs some test and development.
+
+If you want to collaborate, here is a checklist of planned features you can help working on :
++ More authentication methods like OAuth, OAuth2
 + Response stream to string using the headers encoding
 + Request cache
 + More tests
