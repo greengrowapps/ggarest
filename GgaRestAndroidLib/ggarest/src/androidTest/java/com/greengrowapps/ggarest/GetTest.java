@@ -290,4 +290,48 @@ public class GetTest extends GgaRestTest {
             }
         });
     }
+
+    public void testTimeoutWithoutListener() throws Exception {
+
+        final boolean[] otherCalled = new boolean[1];
+
+        otherCalled[0]=false;
+
+        runAndWaitForEnd(this, CONNECTION_TIMEOUT, new AsyncBlockRunner() {
+
+            @Override
+            public void run(final AsyncTimeoutHelper asyncTimeoutHelper) throws AlreadyExecutingException {
+
+                final Webservice webservice = getWebserviceInstance();
+
+                webservice
+                        .get("http://httpbin.org/delay/10")
+                        .withTimeout(5*1000)
+                        .onOther(new OnResponseListener() {
+                            @Override
+                            public void onResponse(int code, Response fullResponse) {
+                                otherCalled[0] = true;
+                                asyncTimeoutHelper.end();
+                            }
+                        })
+                        .execute();
+            }
+
+            @Override
+            public void onEndCalled() {
+                try {
+                    Thread.sleep(5*1000);
+                    assertTrue(otherCalled[0]);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    fail("Ex");
+                }
+            }
+
+            @Override
+            public void onTimeout() {
+                fail("Connection timed out");
+            }
+        });
+    }
 }
