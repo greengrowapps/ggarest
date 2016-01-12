@@ -4,6 +4,6 @@ import com.greengrowapps.ggarest.Response;
 
 public interface OnResponseListener {
 
-    void onResponse(int code, Response fullResponse);
+    void onResponse(int code, Response fullResponse, Exception e);
 
 }

@@ -14,6 +14,6 @@ public class PlainNotifier extends AbstractNotifier {
 
     @Override
     public void processResponseAndNotify(ResponseImpl response) {
-        listener.onResponse(response.getStatusCode(), response);
+        listener.onResponse(response.getStatusCode(), response, null);
     }
 }

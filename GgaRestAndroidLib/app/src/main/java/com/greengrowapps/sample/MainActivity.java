@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import com.greengrowapps.ggarest.GgaRest;
 import com.greengrowapps.ggarest.Response;
+import com.greengrowapps.ggarest.listeners.OnExceptionListener;
 import com.greengrowapps.ggarest.listeners.OnListResponseListener;
 import com.greengrowapps.ggarest.listeners.OnObjResponseListener;
 import com.greengrowapps.ggarest.listeners.OnResponseListener;
@@ -52,8 +53,8 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .onOther(new OnResponseListener() {
                     @Override
-                    public void onResponse(int code, Response fullResponse) {
-                        Toast.makeText(MainActivity.this, "Get failed", Toast.LENGTH_SHORT).show();
+                    public void onResponse(int code, Response fullResponse, Exception e) {
+                        Toast.makeText(MainActivity.this, "Get failed "+e, Toast.LENGTH_SHORT).show();
                     }
                 })
                 .execute();

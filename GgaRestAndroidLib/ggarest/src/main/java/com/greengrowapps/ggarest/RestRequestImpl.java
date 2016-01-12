@@ -10,6 +10,7 @@ import com.greengrowapps.ggarest.webservice.RequestExecutionCallbacks;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.concurrent.TimeoutException;
 
 public class RestRequestImpl implements RestRequest, RequestExecutionCallbacks{
 
@@ -68,7 +69,7 @@ public class RestRequestImpl implements RestRequest, RequestExecutionCallbacks{
         else {
             OnResponseListener listener = connectionDefinition.getDefaultListener();
             if(listener !=null){
-                listener.onResponse(statusCode, response);
+                listener.onResponse(statusCode, response, null);
             }
         }
     }
@@ -78,6 +79,12 @@ public class RestRequestImpl implements RestRequest, RequestExecutionCallbacks{
         OnExceptionListener listener = connectionDefinition.getExceptionListener();
         if(listener!=null){
             listener.onExceptionThrown(exception);
+        }
+        else{
+            OnResponseListener timeoutListener = connectionDefinition.getDefaultListener();
+            if(timeoutListener !=null){
+                timeoutListener.onResponse(0, new ResponseImpl(0,new HashMap<String, String>(),null,null), exception);
+            }
         }
     }
 
@@ -90,7 +97,7 @@ public class RestRequestImpl implements RestRequest, RequestExecutionCallbacks{
         else{
             OnResponseListener timeoutListener = connectionDefinition.getDefaultListener();
             if(timeoutListener !=null){
-                timeoutListener.onResponse(0, new ResponseImpl(0,new HashMap<String, String>(),null,null));
+                timeoutListener.onResponse(0, new ResponseImpl(0,new HashMap<String, String>(),null,null), new TimeoutException());
             }
         }
     }
