@@ -38,7 +38,7 @@ public class GetTest extends GgaRestTest {
                         .get("http://www.google.com")
                         .onSuccess(new OnResponseListener() {
                             @Override
-                            public void onResponse(int code, Response fullResponse) {
+                            public void onResponse(int code, Response fullResponse, Exception e) {
                                 asyncTimeoutHelper.end();
                             }
                         }).execute();
@@ -146,7 +146,7 @@ public class GetTest extends GgaRestTest {
                         .get("http://httpbin.org/basic-auth/user/passwd")
                         .onSuccess(new OnResponseListener() {
                             @Override
-                            public void onResponse(int code, Response fullResponse) {
+                            public void onResponse(int code, Response fullResponse, Exception e) {
                                 asyncTimeoutHelper.end();
                             }
                         })
@@ -180,7 +180,7 @@ public class GetTest extends GgaRestTest {
                         .get("http://httpbin.org/basic-auth/user/passwd")
                         .onSuccess(new OnResponseListener() {
                             @Override
-                            public void onResponse(int code, Response fullResponse) {
+                            public void onResponse(int code, Response fullResponse, Exception e) {
                                 asyncTimeoutHelper.end();
                             }
                         })
@@ -259,7 +259,7 @@ public class GetTest extends GgaRestTest {
                         .withTimeout(5*1000)
                         .onOther(new OnResponseListener() {
                             @Override
-                            public void onResponse(int code, Response fullResponse) {
+                            public void onResponse(int code, Response fullResponse, Exception e) {
                                 otherCalled[0] = true;
                             }
                         })
@@ -309,7 +309,7 @@ public class GetTest extends GgaRestTest {
                         .withTimeout(5*1000)
                         .onOther(new OnResponseListener() {
                             @Override
-                            public void onResponse(int code, Response fullResponse) {
+                            public void onResponse(int code, Response fullResponse, Exception e) {
                                 otherCalled[0] = true;
                                 asyncTimeoutHelper.end();
                             }
