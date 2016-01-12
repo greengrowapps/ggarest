@@ -66,7 +66,7 @@ Or here we use basic auth to retrieve the closest trends using the Twitter api:
 
 ```groovy
 dependencies {
-    compile 'com.greengrowapps:ggarest:0.4'
+    compile 'com.greengrowapps:ggarest:0.5'
 }
 ```
 
