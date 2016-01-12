@@ -102,6 +102,12 @@ public class RequestBuilderImpl implements RequestBuilder {
     }
 
     @Override
+    public void executeAndWait() throws AlreadyExecutingException {
+        RestRequest restRequest = build();
+        restRequest.executeAndWait();
+    }
+
+    @Override
     public RestRequest build() {
         return new RestRequestImpl(connectionDefinition, webservice);
     }

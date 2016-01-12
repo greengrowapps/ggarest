@@ -10,6 +10,7 @@ import com.greengrowapps.ggarest.webservice.RequestExecutionCallbacks;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeoutException;
 
 public class RestRequestImpl implements RestRequest, RequestExecutionCallbacks{
@@ -17,6 +18,7 @@ public class RestRequestImpl implements RestRequest, RequestExecutionCallbacks{
     private final ConnectionDefinition connectionDefinition;
     private final WebserviceImpl webservice;
     private RequestExecution requestExecution = null;
+    private CountDownLatch latch;
 
     public RestRequestImpl(ConnectionDefinition connectionDefinition, WebserviceImpl webservice){
         this.connectionDefinition = connectionDefinition;
@@ -32,12 +34,25 @@ public class RestRequestImpl implements RestRequest, RequestExecutionCallbacks{
     }
 
     @Override
+    public void executeAndWait() throws AlreadyExecutingException {
+        latch = new CountDownLatch(1);
+        execute();
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public synchronized boolean isExecuting() {
         return requestExecution != null;
     }
 
     @Override
     public synchronized void cancel() {
+        releaseLatch();
+
         if(!isExecuting()){
             return;
         }
@@ -48,10 +63,10 @@ public class RestRequestImpl implements RestRequest, RequestExecutionCallbacks{
     @Override
     public synchronized void onRequestCompleted(ResponseImpl response) {
         if(!isExecuting()){
+            releaseLatch();
             return;
         }
         requestExecution=null;
-
 
         int statusCode = response.getStatusCode();
 
@@ -72,6 +87,13 @@ public class RestRequestImpl implements RestRequest, RequestExecutionCallbacks{
                 listener.onResponse(statusCode, response, null);
             }
         }
+        releaseLatch();
+    }
+
+    private void releaseLatch() {
+        if(latch!=null){
+            latch.countDown();
+        }
     }
 
     @Override
@@ -86,6 +108,7 @@ public class RestRequestImpl implements RestRequest, RequestExecutionCallbacks{
                 timeoutListener.onResponse(0, new ResponseImpl(0,new HashMap<String, String>(),null,null), exception);
             }
         }
+        releaseLatch();
     }
 
     @Override
@@ -100,5 +123,6 @@ public class RestRequestImpl implements RestRequest, RequestExecutionCallbacks{
                 timeoutListener.onResponse(0, new ResponseImpl(0,new HashMap<String, String>(),null,null), new TimeoutException());
             }
         }
+        releaseLatch();
     }
 }

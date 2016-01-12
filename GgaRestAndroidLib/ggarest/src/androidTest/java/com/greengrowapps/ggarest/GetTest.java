@@ -334,4 +334,22 @@ public class GetTest extends GgaRestTest {
             }
         });
     }
+
+    public void testExecuteAndWait() throws Exception {
+
+        final boolean[] success = new boolean[1];
+        success[0] = false;
+
+        getWebserviceInstance()
+                .get("http://httpbin.org/get")
+                .onSuccess(ResponseGet.class, new OnObjResponseListener<ResponseGet>() {
+                    @Override
+                    public void onResponse(int code, final ResponseGet message, Response fullResponse) {
+                        success[0]=true;
+                    }
+                })
+                .executeAndWait();
+
+        assertTrue(success[0]);
+    }
 }

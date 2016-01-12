@@ -29,7 +29,10 @@ public interface RequestBuilder {
     RequestBuilder onTimeout(OnTimeoutListener onTimeoutListener);
 
     RestRequest execute() throws AlreadyExecutingException;
+    void executeAndWait() throws AlreadyExecutingException;
+
     RestRequest build();
 
     RequestBuilder onException(OnExceptionListener onExceptionListener);
+
 }
