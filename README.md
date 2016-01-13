@@ -32,7 +32,7 @@ GgaRest.ws().get("http://httpbin.org/get")
         })
         .onOther(new OnResponseListener() {
             @Override
-            public void onResponse(int code, Response fullResponse) {
+            public void onResponse(int code, Response fullResponse, Exception exception) {
                 Toast.makeText(MainActivity.this, "Get failed", Toast.LENGTH_SHORT).show();
             }
         })
@@ -53,7 +53,7 @@ Or here we use basic auth to retrieve the closest trends using the Twitter api:
             })
             .onResponse(401, new OnResponseListener() {
                 @Override
-                public void onResponse(int code, Response fullResponse) {
+                public void onResponse(int code, Response fullResponse, Exception exception) {
                     Toast.makeText(MainActivity.this, "Unauthorized", Toast.LENGTH_SHORT).show();
                 }
             })
@@ -66,7 +66,7 @@ Or here we use basic auth to retrieve the closest trends using the Twitter api:
 
 ```groovy
 dependencies {
-    compile 'com.greengrowapps:ggarest:0.6'
+    compile 'com.greengrowapps:ggarest:0.7'
 }
 ```
 
