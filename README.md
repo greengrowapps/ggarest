@@ -32,7 +32,7 @@ GgaRest.ws().get("http://httpbin.org/get")
         })
         .onOther(new OnResponseListener() {
             @Override
-            public void onResponse(int code, Response fullResponse) {
+            public void onResponse(int code, Response fullResponse, Exception exception) {
                 Toast.makeText(MainActivity.this, "Get failed", Toast.LENGTH_SHORT).show();
             }
         })
@@ -53,7 +53,7 @@ Or here we use basic auth to retrieve the commits of this repository:
             })
             .onResponse(401, new OnResponseListener() {
                 @Override
-                public void onResponse(int code, Response fullResponse) {
+                public void onResponse(int code, Response fullResponse, Exception exception) {
                     Toast.makeText(MainActivity.this, "Unauthorized", Toast.LENGTH_SHORT).show();
                 }
             })
@@ -66,11 +66,24 @@ Or here we use basic auth to retrieve the commits of this repository:
 
 ```groovy
 dependencies {
-    compile 'com.greengrowapps:ggarest:0.5'
+    compile 'com.greengrowapps:ggarest:0.7'
 }
 ```
 
-**2)** Initialize the object in one of your activities' onCreate to start using it:
+**2)** Avoid duplicate files copied in APK adding this inside the android tag in your ``build.gradle``:
+
+```groovy
+    packagingOptions {
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/MANIFEST.MF'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
+```
+
+**3)** Initialize the object in one of your activities' onCreate to start using it:
 
 ```java
 GgaRest.init(this);
