@@ -38,17 +38,17 @@ GgaRest.ws().get("http://httpbin.org/get")
         })
         .execute();
 ```
-Or here we use basic auth to retrieve the closest trends using the Twitter api:
+Or here we use basic auth to retrieve the commits of this repository:
 
 ```java
-    GgaRest.useBasicAuth("username","password");
+    GgaRest.useBasicAuth(GITHUB_USERNAME,PASSWORD);
 
     GgaRest.ws()
-            .get("https://api.twitter.com/1.1/trends/closest.json")
-            .onSuccess(Trend.class, new OnListResponseListener<Trend>() {
+            .get("https://api.github.com/repos/greengrowapps/ggarest/commits")
+            .onSuccess(Commit.class, new OnListResponseListener<Commit>() {
                 @Override
-                public void onResponse(int code, List<Trend> trends, Response fullResponse) {
-                    adapter.updateData(trends);
+                public void onResponse(int code, List<Commit> object, Response fullResponse) {
+                    populateCommits(object);
                 }
             })
             .onResponse(401, new OnResponseListener() {
