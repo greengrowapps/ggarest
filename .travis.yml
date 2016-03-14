@@ -19,3 +19,6 @@ before_script:
   - adb shell input keyevent 82 &
 
 script: ./GgaRestAndroidLib/gradlew -q -p GgaRestAndroidLib build connectedAndroidTest --info
+
+notifications:
+  slack: greengrowapps:puqXRTN44ErQnOysiH6JgOi3
