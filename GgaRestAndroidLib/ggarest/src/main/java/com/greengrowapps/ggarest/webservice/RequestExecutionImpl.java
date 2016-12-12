@@ -5,6 +5,7 @@ import com.greengrowapps.ggarest.ConnectionDefinition;
 import com.greengrowapps.ggarest.ResponseImpl;
 import com.greengrowapps.ggarest.WebserviceImpl;
 import com.greengrowapps.ggarest.authorization.UrlConnectionAuthorizator;
+import com.greengrowapps.ggarest.mock.MockRequest;
 import com.greengrowapps.ggarest.serialization.Serializer;
 import com.greengrowapps.ggarest.streams.StreamConverter;
 
@@ -26,6 +27,7 @@ public class RequestExecutionImpl extends Thread implements RequestExecution{
     private final RequestCallbackCaller requestCallbackCaller;
     private final WebserviceImpl webservice;
     private final UrlConnectionAuthorizator authorizator;
+    private final List<MockRequest> mockRequests;
     private HttpURLConnection urlConnection;
     private boolean cancelled = false;
 
@@ -36,11 +38,14 @@ public class RequestExecutionImpl extends Thread implements RequestExecution{
             final ConnectionDefinition connectionDefinition,
             RequestCallbackCaller requestCallbackCaller,
             WebserviceImpl webservice,
-            UrlConnectionAuthorizator authorizator) {
+            UrlConnectionAuthorizator authorizator, List<MockRequest> mockRequests) {
+
         this.connectionDefinition = connectionDefinition;
         this.requestCallbackCaller = requestCallbackCaller;
         this.webservice = webservice;
         this.authorizator = authorizator;
+        this.mockRequests = mockRequests;
+
         timeoutThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -61,6 +66,14 @@ public class RequestExecutionImpl extends Thread implements RequestExecution{
 
     @Override
     public void run() {
+
+        for(MockRequest mockRequest : mockRequests){
+            if(mockRequest.isMe(connectionDefinition.getUrl(),connectionDefinition.getMethod())){
+                requestCallbackCaller.callRequestCompleted(mockRequest.buildResponse(webservice.getSerializer()));
+                return;
+            }
+        }
+
         URL url;
         urlConnection = null;
         try {

@@ -5,6 +5,7 @@ import android.test.AndroidTestCase;
 import com.greengrowapps.ggarest.authorization.CredentialsImpl;
 import com.greengrowapps.ggarest.authorization.UrlConnectionAuthorizator;
 import com.greengrowapps.ggarest.authorization.UrlConnectionBasicAuthorizator;
+import com.greengrowapps.ggarest.mock.MockRequest;
 import com.greengrowapps.ggarest.serialization.JsonSerializer;
 import com.greengrowapps.ggarest.streams.StreamConverterImpl;
 import com.greengrowapps.ggarest.webservice.RequestCallbackCaller;
@@ -12,6 +13,8 @@ import com.greengrowapps.ggarest.webservice.RequestExecution;
 import com.greengrowapps.ggarest.webservice.RequestExecutionCallbacks;
 import com.greengrowapps.ggarest.webservice.RequestExecutionFactory;
 import com.greengrowapps.ggarest.webservice.RequestExecutionImpl;
+
+import java.util.List;
 
 public class GgaRestTest extends AndroidTestCase{
 
@@ -21,7 +24,7 @@ public class GgaRestTest extends AndroidTestCase{
 
         RequestExecutionFactory factory = new RequestExecutionFactory() {
             @Override
-            public RequestExecution newInstance(ConnectionDefinition connectionDefinition, final RequestExecutionCallbacks requestExecutionCallbacks, WebserviceImpl webservice) {
+            public RequestExecution newInstance(ConnectionDefinition connectionDefinition, final RequestExecutionCallbacks requestExecutionCallbacks, List<MockRequest> mockRequests, WebserviceImpl webservice) {
                 return new RequestExecutionImpl(connectionDefinition, new RequestCallbackCaller() {
                     @Override
                     public void callRequestCompleted(ResponseImpl response) {
@@ -37,7 +40,7 @@ public class GgaRestTest extends AndroidTestCase{
                     public void callTimeout() {
                         requestExecutionCallbacks.onTimeout();
                     }
-                }, webservice, authorizator );
+                }, webservice, authorizator, mockRequests);
             }
         };
 
