@@ -59,14 +59,22 @@ Or here we use basic auth to retrieve the commits of this repository:
             })
             .execute();
 ```
-    
+It's possible to mock some calls for test prouposes:
+
+```java
+        GgaRest.ws().mockGet("http://mysite/someendpoint/")
+                .responseCode(200)
+                .responseContent("{\"text\":\"hello\"}")
+                .save();
+```
+    
 ### Integration
 
 **1)** Add as a dependency to your ``build.gradle``:
 
 ```groovy
 dependencies {
-    compile 'com.greengrowapps:ggarest:0.7'
+    compile 'com.greengrowapps:ggarest:0.8'
 }
 ```
 
@@ -92,7 +100,7 @@ GgaRest.init(this);
 ### Things to develop
 This version is still not 1.0, which means api changes could happen. It needs some test and development.
 
-If you want to collaborate, here is a checklist of planned features you can help working on :
+If you want to collaborate, here is a checklist of planned features you can help working on:
 + More authentication methods like OAuth, OAuth2
 + Response stream to string using the headers encoding
 + Request cache
@@ -118,9 +126,4 @@ If you want to collaborate, here is a checklist of planned features you can help
    limitations under the License.
 
 ```
-    
-
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/greengrowapps/ggarest/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
