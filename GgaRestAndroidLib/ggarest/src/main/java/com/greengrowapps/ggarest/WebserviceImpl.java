@@ -101,4 +101,8 @@ public class WebserviceImpl implements Webservice{
     public void addMockedRequest(MockRequest mockRequest) {
         mockRequests.add(mockRequest);
     }
+
+    public Map<String, String> getDefaultHeaders() {
+        return new HashMap<>(defaultHeaders);
+    }
 }

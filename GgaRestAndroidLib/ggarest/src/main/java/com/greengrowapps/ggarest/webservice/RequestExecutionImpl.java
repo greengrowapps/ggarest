@@ -83,6 +83,7 @@ public class RequestExecutionImpl extends Thread implements RequestExecution{
             }
             urlConnection.setRequestMethod( getRequestMethod() );
 
+            urlConnection = fillWithHeaders( urlConnection, webservice.getDefaultHeaders() );
             urlConnection = fillWithHeaders( urlConnection, connectionDefinition.getHeaders() );
 
             if(connectionDefinition.isPostPut()) {
