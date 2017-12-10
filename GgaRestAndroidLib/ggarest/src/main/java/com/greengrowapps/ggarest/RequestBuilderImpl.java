@@ -25,6 +25,11 @@ public class RequestBuilderImpl implements RequestBuilder {
         connectionDefinition.setBody(body);
         return this;
     }
+    @Override
+    public RequestBuilder withPlainBody(String body) {
+        connectionDefinition.setPlainBody(body);
+        return this;
+    }
 
     @Override
     public RequestBuilder addHeader(String key, String value) {

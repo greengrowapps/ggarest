@@ -25,6 +25,7 @@ public class ConnectionDefinition {
     private OnResponseListener defaultListener;
     private OnTimeoutListener timeoutListener;
     private long timeout = DEFAULT_TIMEOUT;
+    private String plainBody = null;
 
     private ConnectionDefinition(RestMethod method, String url){
         this.method = method;
@@ -50,6 +51,9 @@ public class ConnectionDefinition {
 
     public void setBody(Object body) {
         this.body = body;
+    }
+    public void setPlainBody(String body) {
+        this.plainBody = body;
     }
 
     public void registerListener(int statusCode, OnResponseListener listener){
@@ -84,6 +88,12 @@ public class ConnectionDefinition {
     }
     public Object getBody() {
         return body;
+    }
+    public boolean hasPlainBody() {
+        return plainBody!=null;
+    }
+    public String getPlainBody() {
+        return plainBody;
     }
     public OnExceptionListener getExceptionListener() {
         return exceptionListener;

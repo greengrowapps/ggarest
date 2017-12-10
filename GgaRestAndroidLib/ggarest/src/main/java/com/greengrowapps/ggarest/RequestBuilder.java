@@ -12,6 +12,8 @@ import java.util.Collection;
 public interface RequestBuilder {
 
     RequestBuilder withBody(Object body);
+    RequestBuilder withPlainBody(String body);
+
     RequestBuilder addHeader(String key, String value);
     RequestBuilder addHeaders(Collection<? extends RequestHeader> headers);
 

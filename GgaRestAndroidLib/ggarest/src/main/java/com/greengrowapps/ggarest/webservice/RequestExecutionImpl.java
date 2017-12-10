@@ -90,7 +90,11 @@ public class RequestExecutionImpl extends Thread implements RequestExecution{
                 urlConnection.setDoOutput(true);
                 urlConnection.setChunkedStreamingMode(0);
 
-                if(connectionDefinition.hasBody()){
+                if(connectionDefinition.hasPlainBody()){
+                    StreamConverter streamConverter = webservice.getStreamConverter();
+                    String stringBody = connectionDefinition.getPlainBody();
+                    streamConverter.writeToOutputStream( stringBody, urlConnection.getOutputStream() );
+                }else if(connectionDefinition.hasBody()){
                     StreamConverter streamConverter = webservice.getStreamConverter();
                     Serializer serializer = webservice.getSerializer();
                     String stringBody = serializer.fromObject(connectionDefinition.getBody());
