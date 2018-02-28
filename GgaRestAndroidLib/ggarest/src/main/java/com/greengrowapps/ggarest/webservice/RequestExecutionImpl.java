@@ -21,6 +21,7 @@ import java.util.concurrent.TimeoutException;
 
 public class RequestExecutionImpl extends Thread implements RequestExecution{
 
+    private static final String CONTENT_LENGTH_HEADER = "Content-Length";
     private final Object mutex = new Object();
 
     private final ConnectionDefinition connectionDefinition;
@@ -104,6 +105,10 @@ public class RequestExecutionImpl extends Thread implements RequestExecution{
 
             if(authorizator!=null){
                 urlConnection = authorizator.authorize(urlConnection);
+            }
+
+            if(connectionDefinition.isPostPut()){
+                urlConnection.setRequestProperty(CONTENT_LENGTH_HEADER,""+urlConnection.getContentLength());
             }
 
             if(!cancelled) {
