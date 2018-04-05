@@ -18,4 +18,9 @@ public class JsonSerializer implements Serializer {
         return mapper.writeValueAsString(object);
     }
 
+    @Override
+    public boolean isJson() {
+        return true;
+    }
+
 }

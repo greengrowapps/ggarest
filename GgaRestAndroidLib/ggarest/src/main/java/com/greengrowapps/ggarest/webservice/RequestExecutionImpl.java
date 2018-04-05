@@ -21,7 +21,7 @@ import java.util.concurrent.TimeoutException;
 
 public class RequestExecutionImpl extends Thread implements RequestExecution{
 
-    private static final String CONTENT_LENGTH_HEADER = "Content-Length";
+    private static final String CONTENT_LENGTH_HEADER = "Content-length";
     private final Object mutex = new Object();
 
     private final ConnectionDefinition connectionDefinition;
@@ -87,29 +87,33 @@ public class RequestExecutionImpl extends Thread implements RequestExecution{
             urlConnection = fillWithHeaders( urlConnection, webservice.getDefaultHeaders() );
             urlConnection = fillWithHeaders( urlConnection, connectionDefinition.getHeaders() );
 
+            String stringBody = null;
             if(connectionDefinition.isPostPut()) {
-                urlConnection.setDoOutput(true);
-                urlConnection.setChunkedStreamingMode(0);
-
                 if(connectionDefinition.hasPlainBody()){
-                    StreamConverter streamConverter = webservice.getStreamConverter();
-                    String stringBody = connectionDefinition.getPlainBody();
-                    streamConverter.writeToOutputStream( stringBody, urlConnection.getOutputStream() );
+                    stringBody = connectionDefinition.getPlainBody();
                 }else if(connectionDefinition.hasBody()){
-                    StreamConverter streamConverter = webservice.getStreamConverter();
                     Serializer serializer = webservice.getSerializer();
-                    String stringBody = serializer.fromObject(connectionDefinition.getBody());
-                    streamConverter.writeToOutputStream( stringBody, urlConnection.getOutputStream() );
+                    stringBody = serializer.fromObject(connectionDefinition.getBody());
+                    if(serializer.isJson()){
+                        urlConnection.setRequestProperty("Content-Type","application/json");
+                    }
                 }
+            }
+
+            if(stringBody != null){
+                urlConnection.setDoOutput(true);
+                //urlConnection.setChunkedStreamingMode(0);
+                urlConnection.setFixedLengthStreamingMode(stringBody.length());
+                urlConnection.setRequestProperty(CONTENT_LENGTH_HEADER,""+stringBody.length());
+                StreamConverter streamConverter = webservice.getStreamConverter();
+                streamConverter.writeToOutputStream( stringBody, urlConnection.getOutputStream() );
             }
 
             if(authorizator!=null){
                 urlConnection = authorizator.authorize(urlConnection);
             }
 
-            if(connectionDefinition.isPostPut()){
-                urlConnection.setRequestProperty(CONTENT_LENGTH_HEADER,""+urlConnection.getContentLength());
-            }
+
 
             if(!cancelled) {
                 timeoutThread.start();
