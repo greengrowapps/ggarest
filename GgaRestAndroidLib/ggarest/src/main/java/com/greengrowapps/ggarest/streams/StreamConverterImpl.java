@@ -34,4 +34,9 @@ public class StreamConverterImpl implements StreamConverter{
         return new String(outBytes.toByteArray() , encoding);
 
     }
+
+    @Override
+    public int getContentLength(String stringBody) {
+        return stringBody.getBytes().length;
+    }
 }

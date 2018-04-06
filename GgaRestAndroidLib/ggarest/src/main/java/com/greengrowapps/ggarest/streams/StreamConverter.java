@@ -8,4 +8,5 @@ import java.io.OutputStream;
 public interface StreamConverter {
     void writeToOutputStream(String string, OutputStream outputStream) throws IOException;
     String readFromInputStream(InputStream inputStream) throws IOException;
+    int getContentLength(String stringBody);
 }

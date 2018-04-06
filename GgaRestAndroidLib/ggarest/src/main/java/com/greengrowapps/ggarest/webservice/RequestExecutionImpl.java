@@ -21,7 +21,7 @@ import java.util.concurrent.TimeoutException;
 
 public class RequestExecutionImpl extends Thread implements RequestExecution{
 
-    private static final String CONTENT_LENGTH_HEADER = "Content-length";
+    private static final String CONTENT_LENGTH_HEADER = "Content-Length";
     private final Object mutex = new Object();
 
     private final ConnectionDefinition connectionDefinition;
@@ -101,11 +101,12 @@ public class RequestExecutionImpl extends Thread implements RequestExecution{
             }
 
             if(stringBody != null){
+                StreamConverter streamConverter = webservice.getStreamConverter();
+                int dataLen=streamConverter.getContentLength(stringBody);
                 urlConnection.setDoOutput(true);
                 //urlConnection.setChunkedStreamingMode(0);
-                urlConnection.setFixedLengthStreamingMode(stringBody.length());
-                urlConnection.setRequestProperty(CONTENT_LENGTH_HEADER,""+stringBody.length());
-                StreamConverter streamConverter = webservice.getStreamConverter();
+                urlConnection.setFixedLengthStreamingMode(dataLen);
+                urlConnection.setRequestProperty(CONTENT_LENGTH_HEADER,""+dataLen);
                 streamConverter.writeToOutputStream( stringBody, urlConnection.getOutputStream() );
             }
 

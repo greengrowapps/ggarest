@@ -44,7 +44,7 @@ public class PostContentLengthTest extends GgaRestTest {
     private void checkPostWithStringLength(int length) throws IOException {
         final String content=random(length);
         final String contentJson = getWebserviceInstance().getSerializer().fromObject(content);
-        final int realLength=contentJson.length();
+        final int realLength=contentJson.getBytes().length;
         getWebserviceInstance()
                 .post("http://httpbin.org/post")
                 .withBody(content)
