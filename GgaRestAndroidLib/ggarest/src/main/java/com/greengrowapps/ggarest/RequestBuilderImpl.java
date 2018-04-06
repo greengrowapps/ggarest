@@ -7,6 +7,7 @@ import com.greengrowapps.ggarest.listeners.OnObjResponseListener;
 import com.greengrowapps.ggarest.listeners.OnResponseListener;
 import com.greengrowapps.ggarest.listeners.OnTimeoutListener;
 
+import java.io.File;
 import java.util.Collection;
 
 
@@ -120,6 +121,12 @@ public class RequestBuilderImpl implements RequestBuilder {
     @Override
     public RequestBuilder onException(OnExceptionListener onExceptionListener) {
         connectionDefinition.setOnExceptionListener(onExceptionListener);
+        return this;
+    }
+
+    @Override
+    public RequestBuilder withFileBody(File file, String filename) {
+        connectionDefinition.setFileBody(file,filename);
         return this;
     }
 }

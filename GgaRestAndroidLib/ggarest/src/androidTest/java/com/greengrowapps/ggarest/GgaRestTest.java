@@ -15,6 +15,7 @@ import com.greengrowapps.ggarest.webservice.RequestExecutionFactory;
 import com.greengrowapps.ggarest.webservice.RequestExecutionImpl;
 
 import java.util.List;
+import java.util.Random;
 
 public class GgaRestTest extends AndroidTestCase{
 
@@ -49,5 +50,16 @@ public class GgaRestTest extends AndroidTestCase{
 
     protected void setLogin(String user, String pass) {
         authorizator = new UrlConnectionBasicAuthorizator(new CredentialsImpl(user,pass));
+    }
+
+    public static String random(int randomLength) {
+        Random generator = new Random();
+        StringBuilder randomStringBuilder = new StringBuilder();
+        char tempChar;
+        for (int i = 0; i < randomLength; i++){
+            tempChar = (char) (generator.nextInt(96) + 32);
+            randomStringBuilder.append(tempChar);
+        }
+        return randomStringBuilder.toString();
     }
 }

@@ -10,6 +10,7 @@ import com.greengrowapps.ggarest.notifiers.ListNotifier;
 import com.greengrowapps.ggarest.notifiers.ObjectNotifier;
 import com.greengrowapps.ggarest.notifiers.PlainNotifier;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,6 +27,8 @@ public class ConnectionDefinition {
     private OnTimeoutListener timeoutListener;
     private long timeout = DEFAULT_TIMEOUT;
     private String plainBody = null;
+    private File fileBody = null;
+    private String fileBodyFileName= null;
 
     private ConnectionDefinition(RestMethod method, String url){
         this.method = method;
@@ -95,6 +98,16 @@ public class ConnectionDefinition {
     public String getPlainBody() {
         return plainBody;
     }
+    public boolean hasFileBody(){ return fileBody != null && fileBodyFileName != null;}
+
+    public File getFileBody() {
+        return fileBody;
+    }
+
+    public String getFileBodyFileName() {
+        return fileBodyFileName;
+    }
+
     public OnExceptionListener getExceptionListener() {
         return exceptionListener;
     }
@@ -129,5 +142,10 @@ public class ConnectionDefinition {
 
     public void setTimeout(long timeoutMillis) {
         this.timeout = timeoutMillis;
+    }
+
+    public void setFileBody(File file, String filename) {
+        this.fileBody=file;
+        this.fileBodyFileName=filename;
     }
 }

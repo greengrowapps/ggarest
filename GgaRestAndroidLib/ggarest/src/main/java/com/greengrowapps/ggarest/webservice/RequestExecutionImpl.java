@@ -1,6 +1,8 @@
 package com.greengrowapps.ggarest.webservice;
 
 
+import android.util.Log;
+
 import com.greengrowapps.ggarest.ConnectionDefinition;
 import com.greengrowapps.ggarest.ResponseImpl;
 import com.greengrowapps.ggarest.WebserviceImpl;
@@ -10,6 +12,8 @@ import com.greengrowapps.ggarest.serialization.Serializer;
 import com.greengrowapps.ggarest.streams.StreamConverter;
 
 import java.io.BufferedInputStream;
+import java.io.DataOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -22,6 +26,7 @@ import java.util.concurrent.TimeoutException;
 public class RequestExecutionImpl extends Thread implements RequestExecution{
 
     private static final String CONTENT_LENGTH_HEADER = "Content-Length";
+
     private final Object mutex = new Object();
 
     private final ConnectionDefinition connectionDefinition;
@@ -97,6 +102,8 @@ public class RequestExecutionImpl extends Thread implements RequestExecution{
                     if(serializer.isJson()){
                         urlConnection.setRequestProperty("Content-Type","application/json");
                     }
+                }else if (connectionDefinition.hasFileBody()){
+                    writeFileToStream(urlConnection,connectionDefinition);
                 }
             }
 
@@ -145,6 +152,41 @@ public class RequestExecutionImpl extends Thread implements RequestExecution{
                 }
             }
         }
+    }
+
+    private void writeFileToStream(HttpURLConnection urlConnection, ConnectionDefinition connectionDefinition) throws IOException {
+        String lineEnd = "\r\n";
+        String twoHyphens = "--";
+        String boundary = "------------------------afb19f4aeefb356c";
+        urlConnection.setRequestProperty("ENCTYPE", "multipart/form-data");
+        urlConnection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+        urlConnection.setRequestProperty("file", connectionDefinition.getFileBodyFileName());
+        urlConnection.setRequestProperty("connection", "close");
+        FileInputStream fileInputStream = new FileInputStream(connectionDefinition.getFileBody());
+        DataOutputStream dos = new DataOutputStream(urlConnection.getOutputStream());
+        dos.writeBytes(twoHyphens + boundary + lineEnd);
+        dos.writeBytes("Content-Disposition: form-data; name=\"file\";filename=\"" + connectionDefinition.getFileBodyFileName() + "\"" + lineEnd);
+        dos.writeBytes(lineEnd);
+
+        byte[] buffer;
+        int maxBufferSize = 1 * 1024 * 1024;
+        // create a buffer of  maximum size
+        int bytesAvailable = fileInputStream.available();
+        int bufferSize = Math.min(bytesAvailable, maxBufferSize);
+        buffer = new byte[bufferSize];
+        // read file and write it into form...
+        int bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+
+        while (bytesRead > 0) {
+            dos.write(buffer, 0, bufferSize);
+            bytesAvailable = fileInputStream.available();
+            bufferSize = Math.min(bytesAvailable, maxBufferSize);
+            bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+        }
+        // send multipart form data necesssary after file data...
+        dos.writeBytes(lineEnd);
+        dos.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+        urlConnection.connect();
     }
 
     private HttpURLConnection fillWithHeaders(HttpURLConnection urlConnection, Map<String, String> headers) {

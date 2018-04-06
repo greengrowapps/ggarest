@@ -7,6 +7,7 @@ import com.greengrowapps.ggarest.listeners.OnObjResponseListener;
 import com.greengrowapps.ggarest.listeners.OnResponseListener;
 import com.greengrowapps.ggarest.listeners.OnTimeoutListener;
 
+import java.io.File;
 import java.util.Collection;
 
 public interface RequestBuilder {
@@ -37,4 +38,5 @@ public interface RequestBuilder {
 
     RequestBuilder onException(OnExceptionListener onExceptionListener);
 
+    RequestBuilder withFileBody(File f, String s);
 }
