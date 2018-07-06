@@ -1,20 +1,15 @@
 package com.greengrowapps.sample;
 
-import android.app.Application;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.greengrowapps.ggarest.GgaRest;
 import com.greengrowapps.ggarest.Response;
-import com.greengrowapps.ggarest.listeners.OnExceptionListener;
-import com.greengrowapps.ggarest.listeners.OnListResponseListener;
 import com.greengrowapps.ggarest.listeners.OnObjResponseListener;
 import com.greengrowapps.ggarest.listeners.OnResponseListener;
-
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 

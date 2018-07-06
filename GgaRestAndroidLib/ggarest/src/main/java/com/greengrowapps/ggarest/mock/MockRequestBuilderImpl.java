@@ -1,10 +1,7 @@
 package com.greengrowapps.ggarest.mock;
 
 
-import android.bluetooth.BluetoothAssignedNumbers;
-
 import com.greengrowapps.ggarest.RestMethod;
-import com.greengrowapps.ggarest.Webservice;
 import com.greengrowapps.ggarest.WebserviceImpl;
 
 public class MockRequestBuilderImpl implements MockRequestBuilder{
