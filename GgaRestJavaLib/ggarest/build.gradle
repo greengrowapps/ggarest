@@ -1,24 +1,84 @@
-apply plugin: 'java-library'
-apply plugin: 'maven-publish'
+apply plugin: 'java'
+apply plugin: 'signing'
+apply plugin: 'maven'
 
 repositories {
     mavenCentral()
 }
+signing {
+    sign configurations.archives
+}
+task packageJavadoc(type: Jar, dependsOn: 'javadoc') {
+    from javadoc.destinationDir
+    classifier = 'javadoc'
+}
+task packageSources(type: Jar, dependsOn: 'classes') {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+artifacts {
+    archives packageJavadoc
+    archives packageSources
+}
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId 'com.greengrowapps'
-            artifactId 'ggarest-java'
-            version '0.1'
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: NEXUS_USERNAME, password: NEXUS_PASSWORD)
+            }
+            pom {
+                version = "0.0.1"
+                artifactId = "ggarest-java"
+                groupId = "com.greengrowapps"
+                project {
+                    description = "A small library to make easy connect to a REST webservice"
+                    name = "Gga Rest - Java version"
+                    licenses {
+                        license {
+                            name 'The Apache Software License, Version 2.0'
+                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                            distribution 'repo'
+                        }
+                    }
+                    url 'https://github.com/greengrowapps/ggarest'
+                    scm {
+                        url 'https://github.com/greengrowapps/ggarest'
+                        connection 'https://github.com/greengrowapps/ggarest'
+                        developerConnection 'https://github.com/greengrowapps/ggarest'
+                    }
+                    developers{
+                        developer{
+                            id 'palaman'
+                            organization 'Green Grow Apps'
+                            organizationUrl 'https://greengrowapps.com'
+                            roles {
+                                role 'developer'
+                            }
+                        }
+                    }
+                }
 
-            from components.java
+            }
         }
     }
 }
 
+task sourceJar(type: Jar) {
+    classifier 'sources'
+    from sourceSets.main.allJava
+}
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+compileJava.doLast {
+    tasks.sourceJar.execute()
+    tasks.javadocJar.execute()
+}
+
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'org.codehaus.jackson:jackson-core-asl:1.9.10'
     compile 'org.codehaus.jackson:jackson-mapper-asl:1.9.10'
     testCompile 'junit:junit:4.12'
