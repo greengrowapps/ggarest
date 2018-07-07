@@ -29,7 +29,7 @@ uploadArchives {
                 authentication(userName: NEXUS_USERNAME, password: NEXUS_PASSWORD)
             }
             pom {
-                version = "0.0.1"
+                version = "0.0.2"
                 artifactId = "ggarest-java"
                 groupId = "com.greengrowapps"
                 project {
