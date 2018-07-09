@@ -1,16 +1,17 @@
 ### GgaREST
 ![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.greengrowapps/ggarest/badge.svg?style=flat)
+![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.greengrowapps/ggarest-java/badge.svg?style=flat)
 ![Travis](https://travis-ci.org/greengrowapps/ggarest.svg)
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-GgaREST-green.svg?style=true)](https://android-arsenal.com/details/1/2837)
 
 ### Introduction
-This library makes it easy to work with http connections on Android, but you can also make it work on Java vanilla by modifying only a couple of classes. 
+This library makes it easy to work with http connections on Android or Java. 
 It's especially designed to work with JSON, as it uses a JSON de/serializer by default.
 Its strongest points are the following : 
 - When you make a request (get, post, put, delete) and you register the listeners, your listener code will be code in the main thread. This design allows the modification of UI components directly in the listener code.
 - You can specify the object that you are expecting and it will be deserialized using the [Jackson library](https://github.com/FasterXML/jackson). If it's a list, you also can use the list listener to deserialize it as an object list.
 
-### Usage
+### Android Configuration
 
 To use the GgaRest class you only have to call the init method when your application start. 
 Here is an example by adding default headers like an Api key.
@@ -19,6 +20,13 @@ Here is an example by adding default headers like an Api key.
 GgaRest.init(this);
 GgaRest.addDefaulteader("Accept","application/json");
 ```
+
+### Java Configuration
+
+You not need to init the Library. You can get a Webservice instance directly calling GgaRest.ws()
+
+### Usage
+
 This example gets the content of the url given and deserializes the content as an OriginAndUrl object:
 
 ```java
@@ -68,13 +76,13 @@ It's possible to mock some calls for test prouposes:
                 .save();
 ```
     
-### Integration
+### Android Integration
 
 **1)** Add as a dependency to your ``build.gradle``:
 
 ```groovy
 dependencies {
-    compile 'com.greengrowapps:ggarest:0.8'
+    compile 'com.greengrowapps:ggarest:0.16'
 }
 ```
 
@@ -91,20 +99,29 @@ dependencies {
     }
 ```
 
-**3)** Initialize the object in one of your activities' onCreate to start using it:
+**3)** Initialize the object in your application onStart or in one of your activities' onCreate to start using it:
 
 ```java
 GgaRest.init(this);
 ```
-    
-### Things to develop
-This version is still not 1.0, which means api changes could happen. It needs some test and development.
 
-If you want to collaborate, here is a checklist of planned features you can help working on:
-+ More authentication methods like OAuth, OAuth2
-+ Response stream to string using the headers encoding
-+ Request cache
-+ More tests
+### Java Integration
+
+Add as a dependency to your ``build.gradle`` or ``pom.xml``:
+
+```groovy
+dependencies {
+    compile 'com.greengrowapps:ggarest-java:0.0.2'
+}
+```
+
+```xml
+<dependency>
+    <groupId>com.greengrowapps</groupId>
+    <artifactId>ggarest-java</artifactId>
+    <version>0.0.2</version>
+</dependency>
+```
 
 ### License
 
