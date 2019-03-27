@@ -1,6 +1,7 @@
 package com.greengrowapps.ggarest.webservice;
 
 
+import android.os.Debug;
 import android.util.Log;
 
 import com.greengrowapps.ggarest.ConnectionDefinition;
@@ -22,8 +23,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
+import java.util.zip.GZIPInputStream;
 
 public class RequestExecutionImpl extends Thread implements RequestExecution{
+    private static final String DEBUG_TAG = "RequestExecutionImpl";
 
     private static final String CONTENT_LENGTH_HEADER = "Content-Length";
 
@@ -94,6 +97,9 @@ public class RequestExecutionImpl extends Thread implements RequestExecution{
 
             String stringBody = null;
             if(connectionDefinition.isPostPut()) {
+                if(connectionDefinition.isUseGzip()) {
+                    urlConnection.setRequestProperty("Content-Encoding", "gzip");
+                }
                 if(connectionDefinition.hasPlainBody()){
                     stringBody = connectionDefinition.getPlainBody();
                 }else if(connectionDefinition.hasBody()){
@@ -109,12 +115,14 @@ public class RequestExecutionImpl extends Thread implements RequestExecution{
 
             if(stringBody != null){
                 StreamConverter streamConverter = webservice.getStreamConverter();
-                int dataLen=streamConverter.getContentLength(stringBody);
+                int dataLen=streamConverter.getContentLength(stringBody,connectionDefinition.isUseGzip());
                 urlConnection.setDoOutput(true);
                 //urlConnection.setChunkedStreamingMode(0);
                 urlConnection.setFixedLengthStreamingMode(dataLen);
                 urlConnection.setRequestProperty(CONTENT_LENGTH_HEADER,""+dataLen);
-                streamConverter.writeToOutputStream( stringBody, urlConnection.getOutputStream() );
+
+
+                streamConverter.writeToOutputStream( stringBody, urlConnection.getOutputStream() ,connectionDefinition.isUseGzip());
             }
 
             if(authorizator!=null){
@@ -202,10 +210,25 @@ public class RequestExecutionImpl extends Thread implements RequestExecution{
 
     private void processResponse(InputStream in, HttpURLConnection urlConnection) throws IOException {
 
-        String body = webservice.getStreamConverter().readFromInputStream(in);
+
+
 
         int statusCode = urlConnection.getResponseCode();
         Map<String, List<String>> headers = urlConnection.getHeaderFields();
+        //Log.d(DEBUG_TAG,"Stream len"+in.available());
+        if(headers.containsKey("Content-Encoding")){
+            if(headers.get("Content-Encoding").contains("gzip")){
+                in =new GZIPInputStream(in);
+            }
+        }
+
+        String body = webservice.getStreamConverter().readFromInputStream(in);
+        //Log.d(DEBUG_TAG,"bodyLen"+body.length());
+
+        //String body = webservice.getStreamConverter().readFromInputStream(in);
+
+
+
         ResponseImpl response = new ResponseImpl(statusCode, translateHeaders(headers), body, webservice.getSerializer());
 
         if(!cancelled) {

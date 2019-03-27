@@ -39,4 +39,6 @@ public interface RequestBuilder {
     RequestBuilder onException(OnExceptionListener onExceptionListener);
 
     RequestBuilder withFileBody(File f, String s);
+
+    RequestBuilder useGzip();
 }

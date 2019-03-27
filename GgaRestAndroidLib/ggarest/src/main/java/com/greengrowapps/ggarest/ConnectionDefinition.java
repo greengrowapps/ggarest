@@ -29,6 +29,7 @@ public class ConnectionDefinition {
     private String plainBody = null;
     private File fileBody = null;
     private String fileBodyFileName= null;
+    public boolean useGzip = false;
 
     private ConnectionDefinition(RestMethod method, String url){
         this.method = method;
@@ -147,5 +148,9 @@ public class ConnectionDefinition {
     public void setFileBody(File file, String filename) {
         this.fileBody=file;
         this.fileBodyFileName=filename;
+    }
+
+    public boolean isUseGzip() {
+        return useGzip;
     }
 }

@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 public interface StreamConverter {
-    void writeToOutputStream(String string, OutputStream outputStream) throws IOException;
+    void writeToOutputStream(String string, OutputStream outputStream, boolean useGzip) throws IOException;
     String readFromInputStream(InputStream inputStream) throws IOException;
-    int getContentLength(String stringBody);
+    int getContentLength(String stringBody, boolean useGzip);
 }

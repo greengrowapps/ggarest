@@ -129,4 +129,10 @@ public class RequestBuilderImpl implements RequestBuilder {
         connectionDefinition.setFileBody(file,filename);
         return this;
     }
+
+    @Override
+    public RequestBuilder useGzip() {
+        connectionDefinition.useGzip=true;
+        return this;
+    }
 }
